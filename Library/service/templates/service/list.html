@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+
+{% block content %}
+<div class="wyszukaj">
+<h3 class="title">Wyszukaj książkę</h3>
+<div class="filter">
+<div class="form-row">
+<div class="col">
+	<form action="{% url "service-list" %}" method="post" class="form-inline">
+		
+			{% csrf_token %}
+			{{ form.as_p }}
+			</div>
+			<button class="btn btn-light" width='45px'>
+				<i class="fas fa-search">Szukaj</i>
+			</button>
+		</div>
+	</div>
+	
+	</form>
+	<div class="action-buttons">
+		<a	{% if user.is_authenticated %}
+				class="btn btn-light"
+		   		href="{% url "service-create" %}"
+		   		
+		   	{% else %}
+		   		class="btn btn-light invisible"
+		   		href="#"
+		   	{% endif %}>
+			 Dodaj
+		</a>
+	</div>
+	</div>
+{% endblock %}
+
+{% block piotrek %}
+	
+<div class="content">
+	<table class="table">
+		<tr>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+		{% for notice in notices %}
+				<tr>
+				<td>
+				<a href="{% url "service-preview" notice.id %}">
+				{% if notice.image %}
+					{% thumbnail notice.image "235x350" crop="center" quality=75 as small_image %}
+					<img src="{{ small_image.url }}" />
+					{% endthumbnail %}
+				{% endif %}</a>
+				</td>
+				<td width="650px"><h5>
+				<a href="{% url "service-preview" notice.id %}">
+					{{ notice.title }},       
+					</a>
+				{{ notice.autor }}
+				<div class="{{ notice.status_color }}">{{ notice.status_name }}</div>
+				{{ notice.category|default:"" }}</h5>
+				</td>
+				<td class="text-right">
+					<div class="btn-group" role="group">
+						<a	{% if user.is_authenticated %}
+								class="btn btn-light"
+						   		href="{% url "service-update" notice.id %}"
+						   	{% else %}
+						   		class="btn btn-light invisible"
+						   		href="#"
+						   	{% endif %}>
+						   <i class="fas fa-edit"></i> Edytuj
+						</a>
+						<a	{% if user.is_authenticated %}
+								class="btn btn-light"
+						   		href="{% url "service-delete" notice.id %}"
+						   	{% else %}
+						   		class="btn btn-light invisible"
+						   		href="#"
+						   	{% endif %}>
+						   <i class="fas fa-trash"></i> Usuń
+						</a>
+					</div>
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>
+{% endblock %}
